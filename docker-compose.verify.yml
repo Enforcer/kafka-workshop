@@ -1,0 +1,8 @@
+---
+version: '3'
+services:
+  faust_instance:
+    build: .
+    ports:
+      - "16066:6066"
+    command: bash -c "python /debug/hello_world.py create-topics && python /debug/hello_world.py worker --loglevel info"
