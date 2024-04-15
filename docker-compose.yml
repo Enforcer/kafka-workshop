@@ -54,3 +54,13 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:9092
       KAFKA_CLUSTERS_0_JMXPORT: 1099
 
+  web_app:
+    build: .
+    image: kafka-training-app
+    volumes:
+      - ./web_app:/web_app
+    working_dir: /web_app
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    command: uvicorn app:app --reload --host 0.0.0.0 --port 8000
