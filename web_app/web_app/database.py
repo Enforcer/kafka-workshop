@@ -26,11 +26,18 @@ class Base(DeclarativeBase):
     pass
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer(), primary_key=True)
+    username = Column(String(255), nullable=False)
+
+
 class OutboxEntry(Base):
     __tablename__ = "outbox_entries"
 
     id = Column(Integer(), primary_key=True)
-    queue = Column(String(255), nullable=False)
+    topic = Column(String(255), nullable=False)
     data = Column(JSONB(), nullable=False)
     retries_left = Column(Integer, nullable=False, default=3)
     when_created = Column(

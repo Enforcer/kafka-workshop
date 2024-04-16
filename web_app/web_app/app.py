@@ -1,12 +1,12 @@
 import asyncio
 import json
+import secrets
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from confluent_kafka import Producer
 
-from web_app.database import OutboxEntry, db_session
-
+from web_app.database import OutboxEntry, db_session, User
 
 config = {
     "bootstrap.servers": "broker:9092",
@@ -55,11 +55,24 @@ def send_message() -> Response:
 
 
 @app.get("/outbox")
-def outbox() -> Response:
-    payload = {}
-    producer.produce(
-        topic="",
-        value=json.dumps(payload).encode(),
-        on_delivery=produce_callback,
-    )
-    return Response(status_code=200)
+def outbox() -> dict:
+    with db_session() as session:
+        username = secrets.token_hex(4)
+
+        new_user = User(username=username)
+        session.add(new_user)
+        session.flush()
+
+        payload = {
+            "id": new_user.id,
+            "username": new_user.username,
+        }
+        producer.produce(
+            topic="users",
+            value=json.dumps(payload).encode(),
+            on_delivery=produce_callback,
+        )
+
+        session.commit()
+
+    return {"result": "user created", "username": username}
