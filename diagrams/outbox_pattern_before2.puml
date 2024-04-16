@@ -1,0 +1,13 @@
+@startuml
+scale 2
+participant Application as app
+database Database as db
+queue Broker as q
+
+app -> db: Begin transaction
+app -> app: Execute logic
+app -> db: make changes (INSERT/UPDATE etc)
+app -> db: commit transaction
+app -> q: publish message
+
+@enduml

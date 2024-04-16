@@ -1,0 +1,22 @@
+@startuml
+scale 2
+
+participant Consumer as consumer
+participant Producer as producer
+queue "Kafka Cluster" as kafka
+
+consumer -> kafka: subscribe
+note right
+    automatic commits must be turned off!
+end note
+kafka --> consumer: partitions assignment
+consumer -> producer: << create for each partition >>
+producer -> kafka: init transactions
+consumer -> kafka: fetch record(s)
+kafka --> consumer: records
+producer -> kafka: begin transaction
+producer -> kafka: produce message
+producer -> kafka: send offsets in transaction
+producer -> kafka: commit transaction
+
+@enduml

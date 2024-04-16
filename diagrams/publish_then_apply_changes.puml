@@ -1,0 +1,17 @@
+@startuml
+scale 2
+
+participant Application as app
+queue Broker as q
+participant Consumer as c
+database Database as db
+
+app -> q: publish message synchronously
+note left
+    Return error if sending message fails
+end note
+c -> q: fetch message
+c -> db: make changes (INSERT/UPDATE etc)
+c -> q: commit offset
+
+@enduml

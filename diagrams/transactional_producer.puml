@@ -1,0 +1,22 @@
+@startuml
+scale 2
+
+participant Producer as producer
+queue "Kafka Cluster" as kafka
+
+producer -> kafka: init transactions
+note right
+    Needs transactional.id to be set!
+end note
+producer -> kafka: begin transaction
+producer -> kafka: produce message 1
+producer -> kafka: produce message 2
+producer -> kafka: produce message ...
+producer -> kafka: produce message n
+producer -> kafka: commit transaction
+note right
+    calls producer.flush so waits until messages reach the broker
+end note
+
+
+@enduml

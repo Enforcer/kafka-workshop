@@ -1,0 +1,26 @@
+@startuml
+scale 2
+
+participant Application as app
+database Database as db
+queue Broker as q
+
+participant "Outbox Processor" as outbox
+
+group Transaction within request
+    app -> db: Begin transaction
+    app -> app: Execute logic
+    app -> db: make changes (INSERT/UPDATE etc)
+    app -> db: save messages to send
+    app -> db: commit transaction
+end
+
+group Separate transaction
+    outbox -> db: begin transaction
+    outbox -> db: get events to publish
+    outbox -> q: publish message(s)
+    outbox -> db: remove messages / mark as sent
+    outbox -> db: commit transaction
+end
+
+@enduml
