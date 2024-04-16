@@ -43,5 +43,9 @@ def hello():
 
 @app.get("/message")
 def send_message() -> Response:
-    producer.produce(topic="web-app-producer", value=b"{}", on_delivery=produce_callback)
+    producer.produce(
+        topic="web-app-producer",
+        value=b"{}",
+        on_delivery=produce_callback,
+    )
     return Response(status_code=202, content="Message scheduled to be send")
