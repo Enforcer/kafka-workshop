@@ -63,7 +63,7 @@ services:
     restart: on-failure
     ports:
       - "8000:8000"
-    command: uvicorn app:app --reload --host 0.0.0.0 --port 8000
+    command: uvicorn web_app.app:app --reload --host 0.0.0.0 --port 8000
 
   shell:
     build: .
@@ -72,3 +72,11 @@ services:
       - ./code:/code
     working_dir: /code
     command: sleep 1d
+
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: kafka
+      POSTGRES_PASSWORD: kafka
+    ports:
+      - "5432:5432"

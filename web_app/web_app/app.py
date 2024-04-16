@@ -1,8 +1,11 @@
 import asyncio
+import json
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from confluent_kafka import Producer
+
+from web_app.database import OutboxEntry, db_session
 
 
 config = {
@@ -49,3 +52,14 @@ def send_message() -> Response:
         on_delivery=produce_callback,
     )
     return Response(status_code=202, content="Message scheduled to be send")
+
+
+@app.get("/outbox")
+def outbox() -> Response:
+    payload = {}
+    producer.produce(
+        topic="",
+        value=json.dumps(payload).encode(),
+        on_delivery=produce_callback,
+    )
+    return Response(status_code=200)
