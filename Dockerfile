@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bullseye
+FROM python:3.12-bullseye
 RUN mkdir /app
 WORKDIR /app
 ADD requirements.txt /app/requirements.txt
