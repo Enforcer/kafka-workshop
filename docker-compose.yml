@@ -64,3 +64,11 @@ services:
     ports:
       - "8000:8000"
     command: uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
+  shell:
+    build: .
+    image: kafka-training-app
+    volumes:
+      - ./code:/code
+    working_dir: /code
+    command: sleep forever
