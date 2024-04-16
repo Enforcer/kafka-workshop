@@ -71,4 +71,4 @@ services:
     volumes:
       - ./code:/code
     working_dir: /code
-    command: sleep forever
+    command: sleep 1d
