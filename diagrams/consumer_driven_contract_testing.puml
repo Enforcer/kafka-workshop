@@ -1,0 +1,22 @@
+@startuml
+
+actor "Consumer (Team A)" as consumer
+participant Consumer
+note over Consumer
+    Team A's code
+end note
+collections "Contract (Schema)" as contract
+participant "Schema Registry" as registry
+queue Kafka
+participant Producer
+actor "Provider (Team B)" as provider
+
+consumer -> contract: << creates >>
+consumer -> registry: << uploads schema >>
+provider -> registry: fetch schema
+provider -> Producer: << implement producing with the schema WITH TESTS >>
+Producer -> Kafka: produce
+consumer -> Consumer: << implement consuming WITH TESTS >>
+Consumer -> Kafka: consume
+
+@enduml
