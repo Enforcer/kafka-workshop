@@ -9,12 +9,19 @@ readme = "README.md"
 python = "^3.12"
 fastapi = {extras = ["all"], version = "^0.110.1"}
 confluent-kafka = "^2.3.0"
-faust-streaming = {extras = ["fast", "prometheus", "rocksdb", "uvloop"], version = "^0.11.0"}
+faust-streaming = {extras = ["fast", "prometheus", "uvloop"], version = "^0.11.0"}
 jsonschema = "^4.21.1"
 sqlalchemy = "^2.0.29"
 psycopg2-binary = "^2.9.9"
 watchfiles = "^0.21.0"
 requests = "*"
+opentelemetry-api = "*"
+opentelemetry-exporter-zipkin-proto-http = "*"
+opentelemetry-exporter-zipkin-json = "*"
+opentelemetry-instrumentation = "*"
+opentelemetry-instrumentation-requests = "*"
+opentelemetry-instrumentation-sqlalchemy = "*"
+opentelemetry-instrumentation-confluent-kafka = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"

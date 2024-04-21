@@ -74,6 +74,11 @@ services:
       - "8000:8000"
     command: uvicorn web_app.app:app --reload --host 0.0.0.0 --port 8000
 
+  zipkin:
+    image: openzipkin/zipkin:2.23.19
+    ports:
+      - "9411:9411"
+
   shell:
     build: .
     image: kafka-training-app
