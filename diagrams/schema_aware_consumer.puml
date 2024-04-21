@@ -1,0 +1,31 @@
+@startuml
+scale 2
+
+class Consumer
+
+abstract class Deserializer {
+   __call__(obj: Any, ctx: SerializationContext)
+}
+
+class JSONDeserializer {
+    schema: Schema
+    schema_registry_client: SchemaRegistryClient
+    to_dict
+    __init__(schema_str, schema_registry_client, to_dict=None, config=None)
+    __call__(obj: Any, ctx: SerializationContext)
+}
+
+Deserializer <|-- JSONDeserializer : inherits
+
+class SchemaRegistryClient {
+    __init__(config: dict)
+    get_latest_version(subject)
+}
+
+class SerializationContext {
+    topic: str
+    field: MessageField
+    headers: list[Tuple[str, str]]
+}
+
+@enduml

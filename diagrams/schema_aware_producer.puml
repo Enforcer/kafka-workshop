@@ -1,0 +1,33 @@
+@startuml
+scale 2
+
+class Producer {
+    produce(topic, value, on_delivery, *args, **kwargs)
+}
+
+abstract class Serializer {
+   __call__(obj: Any, ctx: SerializationContext)
+}
+
+class JSONSerializer {
+    schema: Schema
+    schema_registry_client: SchemaRegistryClient
+    to_dict
+    __init__(schema_str, schema_registry_client, to_dict=None, config=None)
+    __call__(obj: Any, ctx: SerializationContext)
+}
+
+Serializer <|-- JSONSerializer : inherits
+
+class SchemaRegistryClient {
+    __init__(config: dict)
+}
+
+class SerializationContext {
+    topic: str
+    field: MessageField
+    headers: list[Tuple[str, str]]
+}
+
+JSONSerializer o-- SchemaRegistryClient : uses
+@enduml

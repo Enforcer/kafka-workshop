@@ -1,0 +1,22 @@
+@startuml
+scale 2
+
+participant Client
+participant Consumer
+participant SchemaRegistryClient
+participant JSONDeserializer
+
+Client -> Consumer: << creates >>
+Client -> Consumer: subscribe
+
+group loop
+    Client -> Consumer: poll()
+    Consumer --> Client: message
+    Client -> SchemaRegistryClient: get_latest_version(message.topic)
+    SchemaRegistryClient --> Client: RegisteredSchema
+    Client -> JSONDeserializer: << creates >>
+    Client -> JSONDeserializer: ~__call__(message, ctx)
+    JSONDeserializer --> Client: deserialized message
+end
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+scale 2
+
+participant Client
+participant Producer
+participant JSONSerializer
+
+Client -> Producer: << creates >>
+activate Producer
+
+Client -> JSONSerializer: << creates >>
+activate JSONSerializer
+note right
+    Once for each
+    message type
+end note
+
+Client -> JSONSerializer: ~__call__(data, context)
+JSONSerializer --> Client: serialized_value
+
+Client -> Producer: produce(topic, [key,] serialized_value, [on_delivery])
+
+@enduml
