@@ -37,8 +37,7 @@ while True:
 
     topic_partitions = [
         TopicPartition(
-            topic=maybe_message.topic(),
-            partition=maybe_message.partition()
+            topic=maybe_message.topic(), partition=maybe_message.partition()
         ),
     ]
     position = consumer.position(topic_partitions)

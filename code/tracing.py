@@ -9,9 +9,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from sqlalchemy import Engine
 
 
-def setup_tracer(
-    service_name: str, engine: Engine | None = None
-) -> None:
+def setup_tracer(service_name: str, engine: Engine | None = None) -> None:
     resource = Resource(attributes={SERVICE_NAME: service_name})
     zipkin_exporter = ZipkinExporter(endpoint=f"http://zipkin:9411/api/v2/spans")
     provider = TracerProvider(resource=resource)

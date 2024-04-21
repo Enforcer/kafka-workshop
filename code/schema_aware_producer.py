@@ -19,29 +19,21 @@ PRODUCER_CONFIG = {
 }
 
 
-schema_registry_client = SchemaRegistryClient(SCHEMA_REGISTRY_CONFIG)
-producer = Producer(PRODUCER_CONFIG)
-
-
 class Payload(BaseModel):
     pass  # TODO
 
 
-json_serializer = JSONSerializer(
-    Payload.schema_json(),
-    schema_registry_client,
-    lambda model, _ctx: model.model_dump(mode="json"),
-)
-
-
-def delivery_report(err, event):
-    if err is not None:
-        print(f'Delivery failed on reading for {event.key().decode("utf8")}: {err}')
-    else:
-        print(f'Message {event.value().decode("utf8")} produced to {event.topic()}')
-
-
 def main() -> None:
+    schema_registry_client = SchemaRegistryClient(SCHEMA_REGISTRY_CONFIG)
+
+    producer = Producer(PRODUCER_CONFIG)
+
+    json_serializer = JSONSerializer(
+        Payload.schema_json(),
+        schema_registry_client,
+        lambda model, _ctx: model.model_dump(mode="json"),
+    )
+
     data = [Payload(**generate()) for _ in range(MESSAGES_COUNT)]
 
     for piece_of_data in data:
@@ -94,6 +86,13 @@ def create_topic() -> None:
     new_topic = NewTopic(topic=TOPIC, num_partitions=4, replication_factor=1)
     futures = admin.create_topics([new_topic])
     futures[TOPIC].result()
+
+
+def delivery_report(err, event):
+    if err is not None:
+        print(f'Delivery failed on reading for {event.key().decode("utf8")}: {err}')
+    else:
+        print(f'Message {event.value().decode("utf8")} produced to {event.topic()}')
 
 
 if __name__ == "__main__":
