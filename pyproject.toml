@@ -22,6 +22,7 @@ opentelemetry-instrumentation = "*"
 opentelemetry-instrumentation-requests = "*"
 opentelemetry-instrumentation-sqlalchemy = "*"
 opentelemetry-instrumentation-confluent-kafka = "*"
+opentelemetry-instrumentation-fastapi = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
