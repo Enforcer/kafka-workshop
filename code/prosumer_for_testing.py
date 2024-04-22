@@ -34,7 +34,7 @@ class Prosumer:
 
                 value = json.dumps(json.loads(event.value()))
                 producer.produce(
-                    topic=event.topic(), value=value.encode(), key=event.key()
+                    topic=self._out_topic, value=value.encode(), key=event.key()
                 )
                 producer.flush()
         finally:
