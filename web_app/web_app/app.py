@@ -11,9 +11,8 @@ from web_app.database import OutboxEntry, db_session, User
 config = {
     "bootstrap.servers": "broker:9092",
     "acks": "all",
-    "message.send.max.retries": 1
+    "message.send.max.retries": 1,
 }
-producer = Producer(config)
 
 
 @asynccontextmanager
@@ -24,6 +23,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+producer = Producer(config)
 
 
 async def producer_poll():
@@ -46,9 +47,10 @@ def hello():
 
 @app.get("/message")
 def send_message() -> Response:
+    value = json.dumps({"message": "Hello, world!", "random": secrets.token_hex(4)})
     producer.produce(
         topic="web-app-producer",
-        value=b"{}",
+        value=value,
         on_delivery=produce_callback,
     )
     return Response(status_code=202, content="Message scheduled to be send")
