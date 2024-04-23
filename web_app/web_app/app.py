@@ -5,8 +5,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from confluent_kafka import Producer
+from opentelemetry.instrumentation.confluent_kafka import ConfluentKafkaInstrumentor
 
-from web_app.database import OutboxEntry, db_session, User
+from web_app.tracing import setup_tracer
+from web_app.database import OutboxEntry, db_session, User, engine
 
 config = {
     "bootstrap.servers": "broker:9092",
@@ -23,8 +25,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+setup_tracer(service_name="web-app", app=app, engine=engine)
 
-producer = Producer(config)
+producer = ConfluentKafkaInstrumentor.instrument_producer(Producer(config))
 
 
 async def producer_poll():

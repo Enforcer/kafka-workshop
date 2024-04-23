@@ -1,15 +1,3 @@
-from confluent_kafka import Consumer
-from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-
-TOPIC = "web-app-producer"
-config = {
-    "bootstrap.servers": "broker:9092",
-    "group.id": "web-app-consumer",
-    "auto.offset.reset": "earliest",
-    "group.instance.id": "web-app-consumer-singleton",
-}
-
-
 from fastapi import FastAPI
 from opentelemetry import trace
 from opentelemetry.exporter.zipkin.proto.http import ZipkinExporter
@@ -47,24 +35,12 @@ def setup_tracer(
     ConfluentKafkaInstrumentor().instrument()
 
 
-def main() -> None:
-    tracer = trace.get_tracer(__name__)
-    propagator = TraceContextTextMapPropagator()
-    consumer = ConfluentKafkaInstrumentor.instrument_consumer(Consumer(config))
-    consumer.subscribe([TOPIC])
+# After running the above function, you can call instrumenting:
 
-    while True:
-        message = consumer.poll(1.0)
-        if message is None:
-            continue
+# Instrumenting producer & consumer
+# proxy_producer = ConfluentKafkaInstrumentor.instrument_producer(some_producer)
+# proxy_consumer = ConfluentKafkaInstrumentor.instrument_consumer(some_consumer)
 
-        headers = {k: v.decode() for k, v in message.headers()}
-        context = propagator.extract(carrier=headers)
-        with tracer.start_as_current_span("Handling message", context=context):
-            print(f"Consumed message: {message.value().decode('utf-8')}")
-            consumer.commit(message)
-
-
-if __name__ == "__main__":
-    setup_tracer("web-app-consumer")
-    main()
+# Custom span
+# with tracer.start_as_current_span(name="custom name of custom span"):
+#     ...
