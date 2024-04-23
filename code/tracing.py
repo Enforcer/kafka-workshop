@@ -42,5 +42,7 @@ def setup_tracer(
 # proxy_consumer = ConfluentKafkaInstrumentor.instrument_consumer(some_consumer)
 
 # Custom span
+# from opentelemetry import trace
+# tracer = trace.get_tracer(__name__)
 # with tracer.start_as_current_span(name="custom name of custom span"):
 #     ...
